@@ -299,7 +299,14 @@ void GCodeParser::parse(char *p) {
   #endif
   string_arg = nullptr;
   while (const char param = uppercase(*p++)) {  // Get the next parameter. A NUL ends the loop
-
+    
+    // Remove end-of-line comments
+    if (param == ';') {
+      // Leading whitespaces can not be removed as command_args might point here
+      p[-1] = '\0';
+      break;
+    }
+    
     // Special handling for M32 [P] !/path/to/file.g#
     // The path must be the last parameter
     if (param == '!' && is_command('M', 32)) {
